@@ -1,6 +1,6 @@
 # React + Vite
 
-Aplication demo here: https://stackblitz.com/github/sabin-iliescu/react-rps?file=README.md
+Application demo here: https://stackblitz.com/github/sabin-iliescu/react-rps?file=README.md
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
