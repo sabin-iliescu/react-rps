@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Choices from "./Choices";
 import Result from "./Result";
+import Log from "./Log";
 
 const Game = () => {
   const [playerChoice, setPlayerChoice] = useState("");
   const [computerChoice, setComputerChoice] = useState("");
   const [result, setResult] = useState("");
+  const [log, setLog] = useState([]);
 
   const choices = ["Rock", "Paper", "Scissors"];
 
@@ -33,7 +35,17 @@ const Game = () => {
     setPlayerChoice("");
     setComputerChoice("");
     setResult("");
+    setLog([]);
   };
+
+  useEffect(() => {
+    if (result) {
+      setLog((prevLog) => [
+        ...prevLog,
+        { playerChoice, computerChoice, result },
+      ]);
+    }
+  }, [playerChoice, computerChoice, result]);
 
   return (
     <div className="game-container">
@@ -45,6 +57,7 @@ const Game = () => {
         result={result}
       />
       {result && <button onClick={resetGame}>Play Again</button>}
+      {log.length > 0 && <Log log={log} />}
     </div>
   );
 };
