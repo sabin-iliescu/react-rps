@@ -1,15 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useReducer } from "react";
 import Choices from "./Choices";
 import Result from "./Result";
-import Log from "./Log";
+import Logs from "./Logs";
 
 const Game = () => {
+  const initialScore = { userWins: 0, computerWins: 0 };
+  const choices = ["Rock", "Paper", "Scissors"];
+
   const [playerChoice, setPlayerChoice] = useState("");
   const [computerChoice, setComputerChoice] = useState("");
   const [result, setResult] = useState("");
-  const [log, setLog] = useState([]);
+  const [logs, setLogs] = useState([]);
+  const [score, dispatch] = useReducer(reducer, initialScore);
 
-  const choices = ["Rock", "Paper", "Scissors"];
+  function reducer(score, action) {
+    switch (action.type) {
+      case "USER_WIN":
+        return { ...score, userWins: score.userWins + 1 };
+      case "COMPUTER_WIN":
+        return { ...score, computerWins: score.computerWins + 1 };
+      case "RESET":
+        return initialScore;
+      default:
+        return score;
+    }
+  }
 
   const playGame = (choice) => {
     setPlayerChoice(choice);
@@ -25,8 +40,10 @@ const Game = () => {
       (player === "Paper" && computer === "Rock") ||
       (player === "Scissors" && computer === "Paper")
     ) {
+      dispatch({ type: "USER_WIN" });
       return "You win!";
     } else {
+      dispatch({ type: "COMPUTER_WIN" });
       return "You lose!";
     }
   };
@@ -35,12 +52,13 @@ const Game = () => {
     setPlayerChoice("");
     setComputerChoice("");
     setResult("");
-    setLog([]);
+    setLogs([]);
+    dispatch({ type: "RESET" });
   };
 
   useEffect(() => {
     if (result) {
-      setLog((prevLog) => [
+      setLogs((prevLog) => [
         ...prevLog,
         { playerChoice, computerChoice, result },
       ]);
@@ -55,9 +73,10 @@ const Game = () => {
         playerChoice={playerChoice}
         computerChoice={computerChoice}
         result={result}
+        score={score}
       />
       {result && <button onClick={resetGame}>Play Again</button>}
-      {log.length > 0 && <Log log={log} />}
+      {logs.length > 0 && <Logs logs={logs} />}
     </div>
   );
 };
